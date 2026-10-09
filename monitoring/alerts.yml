@@ -1,0 +1,17 @@
+groups:
+  - name: cricx
+    rules:
+      - alert: CricXProcessorUnavailable
+        expr: up{job="cricx-spark"} == 0
+        for: 30s
+        labels: {severity: critical}
+        annotations: {summary: "CricX Spark metrics endpoint is unavailable"}
+      - alert: CricXSinkErrors
+        expr: increase(cricx_sink_errors_total[2m]) > 0
+        labels: {severity: warning}
+        annotations: {summary: "Canonical sink transaction failed; inspect recovery"}
+      - alert: CricXBacklog
+        expr: sum(cricx_spark_backlog_records) > 100
+        for: 30s
+        labels: {severity: warning}
+        annotations: {summary: "Spark has a sustained event backlog"}

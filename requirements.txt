@@ -1,0 +1,4 @@
+psycopg[binary]==3.2.6
+kafka-python==2.1.2
+prometheus-client==0.21.1
+streamlit==1.43.2

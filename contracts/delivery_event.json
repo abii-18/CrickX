@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CricX delivery v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "match_id",
+    "innings_number",
+    "raw_delivery_sequence",
+    "revision_number",
+    "event_time",
+    "striker",
+    "non_striker",
+    "bowler",
+    "batter_runs",
+    "extras",
+    "wicket_type",
+    "player_out"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer", "const": 1
+    },
+    "event_id": {
+      "type": "string", "minLength": 1
+    },
+    "match_id": {
+      "type": "string", "minLength": 1
+    },
+    "innings_number": {
+      "type": "integer", "enum": [1, 2]
+    },
+    "raw_delivery_sequence": {
+      "type": "integer", "minimum": 1
+    },
+    "revision_number": {
+      "type": "integer", "minimum": 1
+    },
+    "event_time": {
+      "type": "string", "format": "date-time"
+    },
+    "striker": {
+      "type": "string"
+    },
+    "non_striker": {
+      "type": "string"
+    },
+    "bowler": {
+      "type": "string"
+    },
+    "batter_runs": {
+      "type": "integer", "minimum": 0, "maximum": 6
+    },
+    "extras": {
+      "type": "object", "additionalProperties": false,
+      "required": ["wides", "no_balls", "byes", "leg_byes"],
+      "properties": {
+        "wides": {"type": "integer", "minimum": 0},
+        "no_balls": {"type": "integer", "minimum": 0, "maximum": 1},
+        "byes": {"type": "integer", "minimum": 0},
+        "leg_byes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "wicket_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "player_out": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
