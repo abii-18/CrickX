@@ -5,6 +5,7 @@ import time
 from prometheus_client import Counter, Gauge, start_http_server
 from pyspark.sql import SparkSession, functions as F, types as T
 from cricx.store import initialize, persist
+from spark.over_aggregation import compute_over_summaries
 
 dsn = os.environ["DATABASE_URL"]
 start_http_server(9101)
@@ -12,6 +13,7 @@ last_commit = Gauge("cricx_last_sink_commit_seconds", "Unix timestamp of success
 sink_errors = Counter("cricx_sink_errors_total", "Failed canonical micro-batch transactions")
 records_metric = Counter("cricx_sink_records_total", "Observed committed sink outcomes; retries may be counted", ["outcome"])
 batch_seconds = Gauge("cricx_batch_duration_seconds", "Latest canonical sink processing duration")
+verified_overs = Counter("cricx_spark_verified_over_rows_total", "Observed reference-verified Spark over rows in committed rebuilds; not unique overs")
 backlog = Gauge("cricx_spark_backlog_records", "Kafka end offset minus last successfully processed offset", ["partition"])
 windows_metric = Gauge("cricx_window_event_count", "Latest emitted bounded window count", ["match_id"])
 late_dropped = Gauge("cricx_window_late_rows_dropped", "Rows dropped by watermark in latest analytics batch")
@@ -27,15 +29,22 @@ source = spark.readStream.format("kafka").option("kafka.bootstrap.servers", os.e
 def write_batch(frame, batch_id):
     started = time.monotonic()
     records = [(f"{row.topic}:{row.partition}:{row.offset}", row.value) for row in frame.select("topic", "partition", "offset", F.col("value").cast("string")).toLocalIterator()]
+    over_rows = 0
+    def aggregate(events):
+        nonlocal over_rows
+        summaries = compute_over_summaries(spark, events)
+        over_rows = len(summaries)
+        return summaries
     try:
-        counts = persist(dsn, records)
+        counts = persist(dsn, records, over_aggregator=aggregate)
     except Exception:
         sink_errors.inc()
         raise
     for outcome, count in counts.items():
         records_metric.labels(outcome).inc(count)
+    verified_overs.inc(over_rows)
     last_commit.set(time.time()); batch_seconds.set(time.monotonic() - started)
-    print(json.dumps({"query": "canonical", "batch": batch_id, "outcomes": counts}), flush=True)
+    print(json.dumps({"query": "canonical", "batch": batch_id, "outcomes": counts, "verified_over_rows": over_rows}), flush=True)
 
 
 canonical = source.writeStream.foreachBatch(write_batch).option("checkpointLocation", "/checkpoints/canonical").trigger(processingTime="5 seconds").start()

@@ -89,3 +89,18 @@ class StoreTests(unittest.TestCase):
         with self.psycopg.connect(DSN) as conn:
             count = conn.execute("SELECT count(*) FROM rejected_events WHERE source_key=%s", (records[0][0],)).fetchone()[0]
             self.assertEqual(count, 1)
+
+    def test_aggregation_failure_or_disagreement_rolls_back_all_changes(self):
+        from cricx.store import persist
+        persist(DSN, self.records(self.events))
+        correction = copy.deepcopy(self.events[1])
+        correction.update(revision_number=2, event_id=self.match + ":fix", batter_runs=6)
+        records = [(self.match + ":fix", json.dumps(correction)), (self.match + ":bad", "{bad")]
+        for aggregator in (lambda events: {}, lambda events: (_ for _ in ()).throw(RuntimeError("Spark failed"))):
+            with self.assertRaises((ValueError, RuntimeError)):
+                persist(DSN, records, over_aggregator=aggregator)
+            self.assertEqual(self.totals(), (17, 2, 6, 4))
+            with self.psycopg.connect(DSN) as conn:
+                row = conn.execute("SELECT revision_number,revision_history FROM delivery_events WHERE match_id=%s AND raw_delivery_sequence=2", (self.match,)).fetchone()
+                self.assertEqual(row, (1, []))
+                self.assertEqual(conn.execute("SELECT count(*) FROM rejected_events WHERE source_key=%s", (self.match + ":bad",)).fetchone()[0], 0)
