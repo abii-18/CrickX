@@ -79,9 +79,18 @@ services:
     command: ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0"]
     environment:
       DATABASE_URL: postgresql://cricx:${POSTGRES_PASSWORD}@postgres:5432/cricx
+      SIMULATOR_URL: http://simulator:9700
     ports: ["127.0.0.1:8501:8501"]
     depends_on:
       postgres: {condition: service_healthy}
+  simulator:
+    build: .
+    command: ["python", "-m", "producer.service"]
+    environment: {KAFKA_BOOTSTRAP: "kafka:29092"}
+    volumes: ["simulator-state:/state"]
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+    restart: on-failure
   prometheus:
     image: prom/prometheus:v3.2.1
     command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=6h"]
@@ -93,6 +102,10 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?Set GRAFANA_PASSWORD in .env}
     ports: ["127.0.0.1:3000:3000"]
     volumes: ["grafana-data:/var/lib/grafana", "./monitoring/grafana:/etc/grafana/provisioning:ro"]
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    command: ["--config.file=/etc/alertmanager/alertmanager.yml"]
+    volumes: ["./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro", "alertmanager-data:/alertmanager"]
 volumes:
   kafka-data:
   postgres-data:
@@ -100,3 +113,5 @@ volumes:
   ivy-cache:
   metrics-data:
   grafana-data:
+  simulator-state:
+  alertmanager-data:

@@ -1,1 +1,181 @@
-{"title":"CricX Pipeline","uid":"cricx","schemaVersion":39,"version":1,"refresh":"5s","time":{"from":"now-15m","to":"now"},"panels":[{"id":1,"title":"Spark backlog","type":"timeseries","gridPos":{"x":0,"y":0,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"cricx-prometheus"},"targets":[{"refId":"A","expr":"cricx_spark_backlog_records"}]},{"id":2,"title":"Committed sink outcomes per second","type":"timeseries","gridPos":{"x":12,"y":0,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"cricx-prometheus"},"targets":[{"refId":"A","expr":"rate(cricx_sink_records_total[1m])"}]},{"id":3,"title":"Sink batch duration","type":"timeseries","gridPos":{"x":0,"y":8,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"cricx-prometheus"},"targets":[{"refId":"A","expr":"cricx_batch_duration_seconds"}]},{"id":4,"title":"Sink errors","type":"timeseries","gridPos":{"x":12,"y":8,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"cricx-prometheus"},"targets":[{"refId":"A","expr":"cricx_sink_errors_total"}]}]}
+{
+  "title": "CricX Pipeline",
+  "uid": "cricx",
+  "schemaVersion": 39,
+  "version": 2,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Spark backlog",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "cricx_spark_backlog_records"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Committed sink outcomes per second",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(cricx_sink_records_total[1m])"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Sink batch duration",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "cricx_batch_duration_seconds"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Sink errors",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "cricx_sink_errors_total"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Acknowledged producer sends per second",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(cricx_producer_acknowledged_total[1m])"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Producer send errors",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "cricx_producer_errors_total"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Window state rows",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "cricx_window_state_rows"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Observed watermark drops",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cricx-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "cricx_window_late_rows_total"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,15 @@
 groups:
   - name: cricx
     rules:
+      - alert: CricXProducerUnavailable
+        expr: up{job="cricx-producer"} == 0
+        for: 30s
+        labels: {severity: warning}
+        annotations: {summary: "Simulator metrics endpoint is unavailable"}
+      - alert: CricXProducerSendFailed
+        expr: increase(cricx_producer_errors_total[2m]) > 0
+        labels: {severity: warning}
+        annotations: {summary: "Kafka send failed; simulator paused for explicit recovery"}
       - alert: CricXProcessorUnavailable
         expr: up{job="cricx-spark"} == 0
         for: 30s

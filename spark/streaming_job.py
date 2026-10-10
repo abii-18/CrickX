@@ -14,6 +14,10 @@ records_metric = Counter("cricx_sink_records_total", "Observed committed sink ou
 batch_seconds = Gauge("cricx_batch_duration_seconds", "Latest canonical sink processing duration")
 backlog = Gauge("cricx_spark_backlog_records", "Kafka end offset minus last successfully processed offset", ["partition"])
 windows_metric = Gauge("cricx_window_event_count", "Latest emitted bounded window count", ["match_id"])
+late_dropped = Gauge("cricx_window_late_rows_dropped", "Rows dropped by watermark in latest analytics batch")
+late_total = Counter("cricx_window_late_rows_total", "Observed watermark drops since processor start")
+state_rows = Gauge("cricx_window_state_rows", "Rows retained in bounded window state")
+watermark_seconds = Gauge("cricx_window_watermark_seconds", "Analytics event-time watermark as Unix seconds")
 initialize(dsn)
 spark = SparkSession.builder.appName("CricX").config("spark.sql.shuffle.partitions", "4").getOrCreate()
 spark.sparkContext.setLogLevel("WARN")
@@ -35,6 +39,9 @@ def write_batch(frame, batch_id):
 
 
 canonical = source.writeStream.foreachBatch(write_batch).option("checkpointLocation", "/checkpoints/canonical").trigger(processingTime="5 seconds").start()
+# Recovering the older canonical checkpoint can restore session shuffle settings.
+# Canonical has no aggregation state; explicitly set the window query's four partitions.
+spark.conf.set("spark.sql.shuffle.partitions", "4")
 schema = T.StructType([T.StructField("match_id", T.StringType()), T.StructField("event_time", T.StringType()), T.StructField("event_id", T.StringType())])
 analytics = source.select(F.from_json(F.col("value").cast("string"), schema).alias("e")).select("e.*").withColumn("event_ts", F.to_timestamp("event_time")).filter("event_ts IS NOT NULL AND match_id IS NOT NULL")
 windows = analytics.withWatermark("event_ts", "30 seconds").groupBy(F.window("event_ts", "10 seconds"), "match_id").count()
@@ -51,7 +58,23 @@ window_query = windows.writeStream.outputMode("update").foreachBatch(emit_window
 # Offset backlog uses completed Spark progress, not Kafka consumer-group commits.
 from kafka import KafkaConsumer, TopicPartition
 consumer = KafkaConsumer(bootstrap_servers=os.environ["KAFKA_BOOTSTRAP"], group_id=None)
+last_window_batch = None
 while canonical.isActive and window_query.isActive:
+    window_progress = window_query.lastProgress
+    if window_progress:
+        operators = window_progress.get("stateOperators", [])
+        late_dropped.set(sum(item.get("numRowsDroppedByWatermark", 0) for item in operators))
+        state_rows.set(sum(item.get("numRowsTotal", 0) for item in operators))
+        if window_progress.get("batchId") != last_window_batch:
+            last_window_batch = window_progress.get("batchId")
+            late_total.inc(sum(item.get("numRowsDroppedByWatermark", 0) for item in operators))
+            print(json.dumps({"query": "window_progress", "batch": last_window_batch,
+                              "event_time": window_progress.get("eventTime", {}),
+                              "state": operators}), flush=True)
+        watermark = window_progress.get("eventTime", {}).get("watermark")
+        if watermark:
+            from datetime import datetime
+            watermark_seconds.set(datetime.fromisoformat(watermark.replace("Z", "+00:00")).timestamp())
     progress = canonical.lastProgress
     if progress and progress.get("sources"):
         offsets = progress["sources"][0].get("endOffset", {})

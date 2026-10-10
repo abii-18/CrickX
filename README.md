@@ -7,10 +7,11 @@ Prometheus and Grafana expose processing outcomes, backlog and failures.
 
 ## Status
 
-Initial working pipeline. Twelve scoring/database tests and the acceptance replay
-passed; duplicate replay plus Spark restart retained correct totals. See
-`experiments/initial_validation.md`. Full simulator, remaining failure experiments,
-visual polish and cloud deployment are pending.
+Working local pipeline with seeded simulator and dashboard start/pause/resume controls.
+All 14 tests passed, alongside end-to-end simulation, database outage recovery,
+consumer-group/order, watermark handling and finite duplicate burst experiments.
+See `experiments/initial_validation.md` and `experiments/simulator_validation.md`.
+Cloud deployment and visual polish are pending.
 No paid services or cloud resources have been provisioned.
 
 ## Run locally
@@ -26,7 +27,22 @@ docker compose logs -f spark
 
 Dashboard: http://localhost:8501. Grafana: http://localhost:3000 (user `admin`,
 password from `.env`). Prometheus: http://localhost:9090, including active alert rules.
+Alertmanager routes firing/resolved notifications to the dashboard's alert panel;
+this route stays inside Docker and uses no email or paid monitoring service.
 All published ports bind localhost. Cloud access will use an SSH tunnel.
+
+Use **Simulator Controls** on the dashboard to start an India/Australia simulation
+using the 2023 ODI World Cup final XIs. Default length is 50 overs; replay settings
+also offer 2, 5 or 20-over demos. All outcomes are synthetic, not historical results.
+Playing XI names are sourced from the
+[ICC final report](https://www.icc-cricket.com/news/awesome-australia-beat-india-to-win-the-icc-mens-cricket-world-cup).
+New runs get new match IDs; existing scorecards remain.
+Pause/resume preserves the run. A simulator restart pauses automatically and
+retains acknowledged progress in its Docker volume. A crash between Kafka acknowledgement
+and cursor persistence can resend a delivery; the canonical ledger deduplicates it.
+The private control API is available only within the Docker network.
+Synthetic event time advances one second per generated delivery, independently
+of replay speed; accelerated replay therefore differs from a wall-clock live feed.
 
 Pure scoring tests need only Python:
 
@@ -59,10 +75,13 @@ changes a four to a six: **19 runs**. Replaying it must not inflate totals.
   retry safety; this is not a blanket end-to-end exactly-once claim.
 - Bowler figures exclude byes/leg-byes; no-balls count as batter balls faced, wides
   do not. Supported dismissals are listed in `cricx/events.py`. Penalty runs,
-  free-hit restrictions, retired batters, DLS and full cricket-law validation are
-  outside this initial version. Maidens/partnership charts are not implemented.
-- Out-of-order gaps produce provisional scores; full sequence-completeness and
-  simulator cricket-state validation are still pending.
+  retired batters, DLS and full cricket-law validation are outside this version.
+  The simulator prevents bowled dismissals on free hits; arbitrary input events
+  are not validated against complete innings/free-hit state. Maidens are omitted.
+  Partnerships and fall-of-wicket cards derive from canonical event sequences.
+- Out-of-order gaps produce provisional scores; the dashboard shows a missing
+  sequence warning. Simulator tests check dismissal/innings/chase invariants,
+  but the scorer does not enforce complete cricket-law or strike-state validation.
 - One broker, replication factor 1, Spark `local[2]`: no host failover or multi-node
   scalability. Innings rebuilds are appropriate for small demos, not unlimited scale.
 - Metrics count observed commit outcomes; replay/restarts can affect counter totals.
@@ -81,3 +100,5 @@ ARM64 image checks, resource measurements, experiment writeups and clean-checkou
 validation. Use verified OCI Always Free resources only, on an unupgraded account.
 If free capacity is unavailable, deployment remains pending. No paid fallback.
 Capture evidence before deleting VM, volumes and other temporary resources.
+See `docs/cloud_demo.md` for current limits, pending checks and the bounded-resource
+Compose overlay. Cloud eligibility is not implied by passing local tests.

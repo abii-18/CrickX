@@ -1,0 +1,30 @@
+# Overlay only: docker compose -f docker-compose.yml -f deploy/compose.cloud.yml ...
+# These are application limits, not proof of cloud free-tier eligibility.
+x-log: &bounded-log
+  driver: json-file
+  options: {max-size: "10m", max-file: "3"}
+services:
+  spark:
+    mem_limit: 4g
+    logging: *bounded-log
+  kafka:
+    mem_limit: 1g
+    logging: *bounded-log
+  postgres:
+    mem_limit: 512m
+    logging: *bounded-log
+  dashboard:
+    mem_limit: 512m
+    logging: *bounded-log
+  simulator:
+    mem_limit: 256m
+    logging: *bounded-log
+  prometheus:
+    mem_limit: 512m
+    logging: *bounded-log
+  grafana:
+    mem_limit: 256m
+    logging: *bounded-log
+  alertmanager:
+    mem_limit: 128m
+    logging: *bounded-log
