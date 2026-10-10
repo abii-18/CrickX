@@ -13,9 +13,7 @@ a failure. PostgreSQL stores the accepted deliveries and scorecards.
 
 ![CricX match gallery and live scorecard](docs/images/dashboard.png)
 
-[Full screenshot gallery](screenshots/README.md) · [Architecture and limits](docs/architecture.md) · [Short demo and evidence](docs/demo.md) ·
-[Design decisions](docs/design_decisions.md) · [Learning guide](docs/learning_guide.md) ·
-[Engineering changelog](docs/progress.md) · [Spark aggregation validation report](experiments/spark_over_aggregation.md)
+[Full screenshots](screenshots/README.md)
 
 ## Status
 
