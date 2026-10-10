@@ -1,0 +1,11 @@
+CONTAINER                   REPOSITORY          TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+cricx-alertmanager-1        prom/alertmanager   v0.28.1             linux/amd64         27c475db5fb1        35MB                19 months ago
+cricx-dashboard-1           cricx-dashboard     latest              linux/amd64         d0e6e1e88b91        200MB               6 minutes ago
+cricx-grafana-1             grafana/grafana     11.6.0              linux/amd64         62d2b9d20a19        181MB               18 months ago
+cricx-kafka-1               apache/kafka        3.9.0               linux/amd64         fbc7d7c428e3        218MB               23 months ago
+cricx-kafka-init-1          apache/kafka        3.9.0               linux/amd64         fbc7d7c428e3        218MB               23 months ago
+cricx-kafka-volume-init-1   apache/kafka        3.9.0               linux/amd64         fbc7d7c428e3        218MB               23 months ago
+cricx-postgres-1            postgres            16.8                linux/amd64         301bcb60b8a3        155MB               19 months ago
+cricx-prometheus-1          prom/prometheus     v3.2.1              linux/amd64         6927e0919a14        117MB               19 months ago
+cricx-simulator-1           cricx-simulator     latest              linux/amd64         41051926da24        200MB               6 minutes ago
+cricx-spark-1               cricx-spark         latest              linux/amd64         ed601cc6359d        546MB               6 minutes ago

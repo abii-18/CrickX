@@ -1,0 +1,44 @@
+     match_id     | innings_number | runs | wickets | legal_balls | extras 
+------------------+----------------+------+---------+-------------+--------
+ sim-6ad3137de878 |              2 |   15 |       0 |           5 |      0
+ sim-6ad3137de878 |              1 |   14 |       0 |          12 |      1
+ sim-7576ffc7c20c |              1 |   14 |       0 |          12 |      1
+ sim-7576ffc7c20c |              2 |   15 |       0 |           5 |      0
+ sim-8246afe54a4a |              1 |   49 |       3 |          52 |      4
+ sim-16570dc00295 |              2 |  280 |       6 |         207 |     21
+ sim-16570dc00295 |              1 |  279 |      10 |         253 |     27
+ sim-34e9753146b1 |              2 |  312 |       6 |         245 |     23
+ sim-34e9753146b1 |              1 |  311 |      10 |         276 |     40
+ sim-dc9f0ed29aaa |              2 |  335 |       9 |         290 |     25
+ sim-dc9f0ed29aaa |              1 |  334 |       9 |         300 |     25
+ sim-18bffb8a5e97 |              2 |  363 |       7 |         280 |     24
+(12 rows)
+
+     match_id     | innings_number |     player      | runs | balls | fours | sixes 
+------------------+----------------+-----------------+------+-------+-------+-------
+ sim-0c39380eb178 |              1 | Kuldeep Yadav   |  135 |    67 |    13 |     8
+ sim-18bffb8a5e97 |              2 | Temba Bavuma    |  112 |   118 |     9 |     2
+ sim-34e9753146b1 |              1 | Tom Latham      |  103 |   100 |     8 |     3
+ sim-004794e10b20 |              1 | Mohammed Shami  |  100 |    63 |     8 |     5
+ sim-0c39380eb178 |              1 | Mohammed Siraj  |   95 |    60 |     8 |     5
+ sim-18bffb8a5e97 |              1 | Glenn Maxwell   |   94 |    72 |    12 |     3
+ sim-63ab459f7a73 |              1 | Jasprit Bumrah  |   92 |    78 |    10 |     3
+ sim-5ee82ec791dd |              1 | Jasprit Bumrah  |   92 |    78 |    10 |     3
+ sim-004794e10b20 |              2 | Rachin Ravindra |   82 |    84 |     8 |     1
+ sim-18bffb8a5e97 |              2 | Aiden Markram   |   81 |    52 |    10 |     2
+(10 rows)
+
+     match_id     | innings_number |      player      | runs | legal_balls | wickets 
+------------------+----------------+------------------+------+-------------+---------
+ sim-0c39380eb178 |              1 | Pat Cummins      |   59 |          52 |       7
+ sim-5ee82ec791dd |              1 | Pat Cummins      |   34 |          52 |       7
+ sim-63ab459f7a73 |              1 | Pat Cummins      |   34 |          52 |       7
+ sim-004794e10b20 |              2 | Jasprit Bumrah   |   68 |          60 |       5
+ sim-dc9f0ed29aaa |              1 | Hasan Ali        |   68 |          60 |       5
+ sim-18bffb8a5e97 |              1 | Kagiso Rabada    |   64 |          60 |       4
+ sim-16570dc00295 |              1 | Gerald Coetzee   |   63 |          49 |       4
+ sim-18bffb8a5e97 |              2 | Mitchell Starc   |   84 |          60 |       3
+ sim-004794e10b20 |              1 | Mitchell Santner |   88 |          60 |       3
+ sim-0c39380eb178 |              2 | Mohammed Shami   |   67 |          45 |       3
+(10 rows)
+

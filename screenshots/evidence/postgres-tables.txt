@@ -1,0 +1,22 @@
+                                                       version                                                       
+---------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 16.8 (Debian 16.8-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+(1 row)
+
+             List of relations
+ Schema |       Name        | Type  | Owner 
+--------+-------------------+-------+-------
+ public | batting_scorecard | table | cricx
+ public | bowling_scorecard | table | cricx
+ public | delivery_events   | table | cricx
+ public | innings_scorecard | table | cricx
+ public | matches           | table | cricx
+ public | over_summary      | table | cricx
+ public | rejected_events   | table | cricx
+(7 rows)
+
+ matches | canonical_deliveries | innings | rejected_source_offsets 
+---------+----------------------+---------+-------------------------
+     166 |                 5709 |     179 |                       6
+(1 row)
+

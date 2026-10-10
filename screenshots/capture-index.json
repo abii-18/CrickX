@@ -1,0 +1,87 @@
+[
+  {
+    "file": "docker-services.png",
+    "description": "Live command-output evidence rendered in a browser; no GUI claim.",
+    "captured_at": "2026-10-10T10:49:54.762Z"
+  },
+  {
+    "file": "docker-resources.png",
+    "description": "Live command-output evidence rendered in a browser; no GUI claim.",
+    "captured_at": "2026-10-10T10:49:54.886Z"
+  },
+  {
+    "file": "postgres-schema.png",
+    "description": "Live command-output evidence rendered in a browser; no GUI claim.",
+    "captured_at": "2026-10-10T10:49:55.016Z"
+  },
+  {
+    "file": "postgres-scorecards.png",
+    "description": "Live command-output evidence rendered in a browser; no GUI claim.",
+    "captured_at": "2026-10-10T10:49:55.243Z"
+  },
+  {
+    "file": "streamlit-live-match.png",
+    "description": "Live Match tab, current selected simulator replay",
+    "captured_at": "2026-10-10T10:50:00.683Z"
+  },
+  {
+    "file": "streamlit-scorecards.png",
+    "description": "Actual Streamlit Scorecards tab",
+    "captured_at": "2026-10-10T10:50:01.775Z"
+  },
+  {
+    "file": "streamlit-player-stats.png",
+    "description": "Actual Streamlit Player Stats tab",
+    "captured_at": "2026-10-10T10:50:02.781Z"
+  },
+  {
+    "file": "streamlit-team-stats.png",
+    "description": "Actual Streamlit Team Stats tab",
+    "captured_at": "2026-10-10T10:50:03.723Z"
+  },
+  {
+    "file": "streamlit-analytics.png",
+    "description": "Actual Streamlit Analytics tab",
+    "captured_at": "2026-10-10T10:50:04.668Z"
+  },
+  {
+    "file": "streamlit-monitoring.png",
+    "description": "Actual Streamlit Monitoring tab",
+    "captured_at": "2026-10-10T10:50:05.609Z"
+  },
+  {
+    "file": "streamlit-match-gallery-page2.png",
+    "description": "Second gallery page and selected India vs South Africa replay",
+    "captured_at": "2026-10-10T10:50:07.654Z"
+  },
+  {
+    "file": "prometheus-targets.png",
+    "description": "Actual Prometheus scrape targets",
+    "captured_at": "2026-10-10T10:50:10.467Z"
+  },
+  {
+    "file": "prometheus-alerts.png",
+    "description": "Actual Prometheus alert rules and current states",
+    "captured_at": "2026-10-10T10:50:13.058Z"
+  },
+  {
+    "file": "prometheus-up-query.png",
+    "description": "Actual Prometheus query for target availability",
+    "captured_at": "2026-10-10T10:50:15.608Z"
+  },
+  {
+    "file": "kafka-topic.png",
+    "description": "Read-only live command/metrics output rendered in a browser.",
+    "captured_at": "2026-10-10T10:51:22.818Z"
+  },
+  {
+    "file": "spark-metrics.png",
+    "description": "Read-only live command/metrics output rendered in a browser.",
+    "captured_at": "2026-10-10T10:51:22.926Z"
+  },
+  {
+    "file": "grafana-pipeline.png",
+    "description": "Actual Grafana pipeline metrics dashboard (viewport capture)",
+    "captured_at": "2026-10-10T10:51:32.449Z"
+  }
+]

@@ -1,0 +1,12 @@
+cricx_last_sink_commit_seconds 0.0
+cricx_sink_errors_total 0.0
+cricx_sink_errors_created 1.7916289930596068e+09
+cricx_batch_duration_seconds 0.0
+cricx_spark_backlog_records{partition="2"} 0.0
+cricx_spark_backlog_records{partition="1"} 0.0
+cricx_spark_backlog_records{partition="0"} 0.0
+cricx_window_late_rows_dropped 0.0
+cricx_window_late_rows_total 0.0
+cricx_window_late_rows_created 1.7916289930599606e+09
+cricx_window_state_rows 0.0
+cricx_window_watermark_seconds 1.791633968e+09
