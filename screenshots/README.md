@@ -1,6 +1,6 @@
 # CricX screenshots
 
-Captured from the running local Docker stack on 2026-10-10. Cricket outcomes are synthetic. These snapshots are evidence of the captured state, not a cloud deployment or a performance benchmark.
+Recaptured from the running local Docker stack on 2026-10-10 after the five-tab dashboard redesign. All 17 previous images have been replaced. The primary Streamlit captures show the completed India–New Zealand simulation so both innings and the redesigned charts are visible. Cricket outcomes are synthetic. These snapshots are evidence of the captured state, not a cloud deployment or a performance benchmark.
 
 **Capture types:** Streamlit, Prometheus and Grafana images are actual browser UI screenshots. Docker, PostgreSQL, Kafka and Spark evidence images render unmodified live command output for readability; they are not screenshots of Docker Desktop, pgAdmin or Spark UI. Raw outputs are retained in [evidence](evidence). The native desktop capture helper was unavailable.
 
@@ -10,7 +10,7 @@ Captured from the running local Docker stack on 2026-10-10. Cricket outcomes are
 | Docker | [docker-resources.png](docker-resources.png) | Live command-output evidence rendered in a browser; no GUI claim. |
 | Postgres | [postgres-schema.png](postgres-schema.png) | Live command-output evidence rendered in a browser; no GUI claim. |
 | Postgres | [postgres-scorecards.png](postgres-scorecards.png) | Live command-output evidence rendered in a browser; no GUI claim. |
-| Streamlit | [streamlit-live-match.png](streamlit-live-match.png) | Live Match tab, current selected simulator replay |
+| Streamlit | [streamlit-live-match.png](streamlit-live-match.png) | Live Match tab, completed India–New Zealand saved simulation |
 | Streamlit | [streamlit-scorecards.png](streamlit-scorecards.png) | Actual Streamlit Scorecards tab |
 | Streamlit | [streamlit-player-stats.png](streamlit-player-stats.png) | Actual Streamlit Player Stats tab |
 | Streamlit | [streamlit-team-stats.png](streamlit-team-stats.png) | Actual Streamlit Team Stats tab |

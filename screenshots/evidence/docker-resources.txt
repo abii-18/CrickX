@@ -1,9 +1,9 @@
 CONTAINER ID   NAME                   CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O   PIDS
-fbb6a441f54e   cricx-kafka-1          1.21%     473.9MiB / 5.792GiB   7.99%     8.52MB / 12.1MB   0B / 0B     102
-b29cba25267f   cricx-spark-1          1.06%     562.6MiB / 5.792GiB   9.48%     241kB / 309kB     0B / 0B     73
-9c4124fd7733   cricx-postgres-1       0.00%     24.08MiB / 5.792GiB   0.41%     98.2kB / 404kB    0B / 0B     6
-8b331eb53ce1   cricx-simulator-1      0.07%     22.15MiB / 5.792GiB   0.37%     82.4kB / 114kB    0B / 0B     4
-2da2022f4538   cricx-dashboard-1      0.10%     38.39MiB / 5.792GiB   0.65%     82.6kB / 110kB    0B / 0B     6
-47428a8aea65   cricx-prometheus-1     0.40%     29.59MiB / 5.792GiB   0.50%     4.57MB / 5.72MB   0B / 0B     9
-98e75aa30b2f   cricx-grafana-1        0.34%     77.23MiB / 5.792GiB   1.30%     163kB / 9.39MB    0B / 0B     10
-58f223c5214a   cricx-alertmanager-1   0.11%     17.13MiB / 5.792GiB   0.29%     72.2kB / 43.9kB   0B / 0B     8
+fbb6a441f54e   cricx-kafka-1          1.62%     476.9MiB / 5.792GiB   8.04%     12.1MB / 16.5MB   0B / 0B     102
+9a4e79a551e5   cricx-spark-1          0.32%     783.2MiB / 5.792GiB   13.21%    7.97MB / 6.67MB   0B / 0B     87
+9c4124fd7733   cricx-postgres-1       2.06%     27.18MiB / 5.792GiB   0.46%     4.63MB / 22.3MB   0B / 0B     6
+8b331eb53ce1   cricx-simulator-1      0.44%     25.27MiB / 5.792GiB   0.43%     1.31MB / 2.39MB   0B / 0B     4
+45c8c242b707   cricx-dashboard-1      31.18%    131MiB / 5.792GiB     2.21%     13.8MB / 37.9MB   0B / 0B     10
+47428a8aea65   cricx-prometheus-1     0.35%     41.99MiB / 5.792GiB   0.71%     8.03MB / 19.6MB   0B / 0B     9
+98e75aa30b2f   cricx-grafana-1        0.20%     94.93MiB / 5.792GiB   1.60%     592kB / 42.2MB    0B / 0B     12
+58f223c5214a   cricx-alertmanager-1   0.15%     17.14MiB / 5.792GiB   0.29%     97kB / 61.4kB     0B / 0B     8

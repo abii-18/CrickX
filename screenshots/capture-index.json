@@ -2,86 +2,86 @@
   {
     "file": "docker-services.png",
     "description": "Live command-output evidence rendered in a browser; no GUI claim.",
-    "captured_at": "2026-10-10T10:49:54.762Z"
+    "captured_at": "2026-10-10T17:03:51.846Z"
   },
   {
     "file": "docker-resources.png",
     "description": "Live command-output evidence rendered in a browser; no GUI claim.",
-    "captured_at": "2026-10-10T10:49:54.886Z"
+    "captured_at": "2026-10-10T17:03:51.993Z"
   },
   {
     "file": "postgres-schema.png",
     "description": "Live command-output evidence rendered in a browser; no GUI claim.",
-    "captured_at": "2026-10-10T10:49:55.016Z"
+    "captured_at": "2026-10-10T17:03:52.097Z"
   },
   {
     "file": "postgres-scorecards.png",
     "description": "Live command-output evidence rendered in a browser; no GUI claim.",
-    "captured_at": "2026-10-10T10:49:55.243Z"
-  },
-  {
-    "file": "streamlit-live-match.png",
-    "description": "Live Match tab, current selected simulator replay",
-    "captured_at": "2026-10-10T10:50:00.683Z"
-  },
-  {
-    "file": "streamlit-scorecards.png",
-    "description": "Actual Streamlit Scorecards tab",
-    "captured_at": "2026-10-10T10:50:01.775Z"
-  },
-  {
-    "file": "streamlit-player-stats.png",
-    "description": "Actual Streamlit Player Stats tab",
-    "captured_at": "2026-10-10T10:50:02.781Z"
-  },
-  {
-    "file": "streamlit-team-stats.png",
-    "description": "Actual Streamlit Team Stats tab",
-    "captured_at": "2026-10-10T10:50:03.723Z"
-  },
-  {
-    "file": "streamlit-analytics.png",
-    "description": "Actual Streamlit Analytics tab",
-    "captured_at": "2026-10-10T10:50:04.668Z"
-  },
-  {
-    "file": "streamlit-monitoring.png",
-    "description": "Actual Streamlit Monitoring tab",
-    "captured_at": "2026-10-10T10:50:05.609Z"
-  },
-  {
-    "file": "streamlit-match-gallery-page2.png",
-    "description": "Second gallery page and selected India vs South Africa replay",
-    "captured_at": "2026-10-10T10:50:07.654Z"
+    "captured_at": "2026-10-10T17:03:52.201Z"
   },
   {
     "file": "prometheus-targets.png",
     "description": "Actual Prometheus scrape targets",
-    "captured_at": "2026-10-10T10:50:10.467Z"
+    "captured_at": "2026-10-10T17:04:10.877Z"
   },
   {
     "file": "prometheus-alerts.png",
     "description": "Actual Prometheus alert rules and current states",
-    "captured_at": "2026-10-10T10:50:13.058Z"
+    "captured_at": "2026-10-10T17:04:13.811Z"
   },
   {
     "file": "prometheus-up-query.png",
     "description": "Actual Prometheus query for target availability",
-    "captured_at": "2026-10-10T10:50:15.608Z"
+    "captured_at": "2026-10-10T17:04:16.624Z"
   },
   {
     "file": "kafka-topic.png",
     "description": "Read-only live command/metrics output rendered in a browser.",
-    "captured_at": "2026-10-10T10:51:22.818Z"
+    "captured_at": "2026-10-10T17:04:48.634Z"
   },
   {
     "file": "spark-metrics.png",
     "description": "Read-only live command/metrics output rendered in a browser.",
-    "captured_at": "2026-10-10T10:51:22.926Z"
+    "captured_at": "2026-10-10T17:04:48.795Z"
   },
   {
     "file": "grafana-pipeline.png",
     "description": "Actual Grafana pipeline metrics dashboard (viewport capture)",
-    "captured_at": "2026-10-10T10:51:32.449Z"
+    "captured_at": "2026-10-10T17:04:59.677Z"
+  },
+  {
+    "file": "streamlit-live-match.png",
+    "description": "Live Match tab, completed India vs New Zealand saved simulation",
+    "captured_at": "2026-10-10T17:05:46.457Z"
+  },
+  {
+    "file": "streamlit-scorecards.png",
+    "description": "Actual Streamlit Scorecards tab",
+    "captured_at": "2026-10-10T17:05:48.090Z"
+  },
+  {
+    "file": "streamlit-player-stats.png",
+    "description": "Actual Streamlit Player Stats tab",
+    "captured_at": "2026-10-10T17:05:49.771Z"
+  },
+  {
+    "file": "streamlit-team-stats.png",
+    "description": "Actual Streamlit Team Stats tab",
+    "captured_at": "2026-10-10T17:05:51.170Z"
+  },
+  {
+    "file": "streamlit-analytics.png",
+    "description": "Actual Streamlit Analytics tab",
+    "captured_at": "2026-10-10T17:05:53.028Z"
+  },
+  {
+    "file": "streamlit-monitoring.png",
+    "description": "Actual Streamlit Monitoring tab",
+    "captured_at": "2026-10-10T17:05:54.718Z"
+  },
+  {
+    "file": "streamlit-match-gallery-page2.png",
+    "description": "Second gallery page and selected India vs South Africa replay",
+    "captured_at": "2026-10-10T17:05:58.363Z"
   }
 ]

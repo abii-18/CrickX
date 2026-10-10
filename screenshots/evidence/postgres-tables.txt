@@ -15,8 +15,10 @@
  public | rejected_events   | table | cricx
 (7 rows)
 
- matches | canonical_deliveries | innings | rejected_source_offsets 
----------+----------------------+---------+-------------------------
-     166 |                 5709 |     179 |                       6
-(1 row)
+        metric        | count 
+----------------------+-------
+ canonical deliveries |  6995
+ matches              |   319
+ rejected events      |     9
+(3 rows)
 
