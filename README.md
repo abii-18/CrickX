@@ -125,12 +125,14 @@ use only when intentionally discarding the demonstration. It deletes no cloud VM
 
 ## CI and cost
 
-GitHub Actions runs pure-Python tests and a separate PostgreSQL 16 integration job
+GitHub Actions runs Python tests (including threaded producer HTTP regression tests)
+and a separate PostgreSQL 16 integration job
 on pushes and pull requests. It does not start Kafka or Spark, deploy anything,
 upload artifacts or enable dependency caches. Both jobs have ten-minute limits.
 Jobs run only when the repository is public. Standard hosted runners in public
 repositories are [free under GitHub's documented policy](https://docs.github.com/en/actions/concepts/billing-and-usage).
 Making this repository private disables these jobs until explicitly reconfigured.
+The four opt-in Spark aggregation tests remain Docker-only and are not part of CI.
 
 Cloud deployment is deferred. Current verification is on local Docker, so a
 cloud-hosted demo remains unfulfilled. The previous cloud plan is retained in
