@@ -14,7 +14,7 @@ def initialize(dsn):
         conn.execute(schema.read_text(encoding="utf-8"))
 
 
-def persist(dsn, records):
+def persist(dsn, records, over_aggregator=None):
     counts = Counter()
     with psycopg.connect(dsn) as conn:
         touched = set()
@@ -57,9 +57,24 @@ def persist(dsn, records):
             if reason is not None:
                 inserted = conn.execute("INSERT INTO rejected_events(source_key,reason,raw_payload) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING RETURNING rejection_id", (source_key, reason, raw)).fetchone()
                 counts["rejected" if inserted else "rejection_replayed"] += 1
+        results = {}
+        canonical_events = []
+        expected_overs = {}
         for match, innings in sorted(touched):
             events = [row[0] for row in conn.execute("SELECT payload FROM delivery_events WHERE match_id=%s AND innings_number=%s", (match, innings))]
             result = score(events)[(match, innings)]
+            results[(match, innings)] = result
+            if over_aggregator is not None:
+                canonical_events.extend(events)
+            expected_overs.update({(match, innings, over): data for over, data in result["overs"].items()})
+        # One aggregation invocation for all touched innings; transaction stays open.
+        # Never silently fall back if Spark fails or disagrees with the reference.
+        computed_overs = expected_overs
+        if over_aggregator is not None and touched:
+            computed_overs = over_aggregator(canonical_events)
+            if computed_overs != expected_overs:
+                raise ValueError("Spark over aggregation disagrees with canonical reference scorer")
+        for (match, innings), result in results.items():
             conn.execute("""INSERT INTO innings_scorecard(match_id,innings_number,runs,wickets,legal_balls,extras)
                VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT(match_id,innings_number) DO UPDATE SET
                runs=EXCLUDED.runs,wickets=EXCLUDED.wickets,legal_balls=EXCLUDED.legal_balls,extras=EXCLUDED.extras,updated_at=now()""",
@@ -67,6 +82,7 @@ def persist(dsn, records):
             for table in ("over_summary", "batting_scorecard", "bowling_scorecard"):
                 conn.execute(f"DELETE FROM {table} WHERE match_id=%s AND innings_number=%s", (match, innings))
             for over, data in result["overs"].items():
+                data = computed_overs[(match, innings, over)]
                 conn.execute("INSERT INTO over_summary VALUES (%s,%s,%s,%s,%s,%s)", (match, innings, over, data["runs"], data["wickets"], data["legal_balls"]))
             for player, data in result["batting"].items():
                 conn.execute("INSERT INTO batting_scorecard VALUES (%s,%s,%s,%s,%s,%s,%s,%s)", (match, innings, player, data["runs"], data["balls"], data["fours"], data["sixes"], data["dismissal"]))
