@@ -1,4 +1,4 @@
-# Architecture and interview explanation
+# Architecture
 
 ```mermaid
 flowchart TB
@@ -48,14 +48,13 @@ reference scorer. Spark groups by match, innings and this zero-based over, then
 sums runs (batter + all extras), wickets and legal balls. Only aggregate rows
 return to the driver for comparison and SQL writes. No Python UDF is used.
 
-The production `foreachBatch` passes this aggregation to `persist`. Its output
+The canonical `foreachBatch` passes this aggregation to `persist`. Its output
 must exactly equal the Python reference over summaries before any serving
 rebuild commits. Spark output supplies the existing `over_summary` table;
 innings/batting/bowling scoring remains Python. A mismatch or Spark exception
 rolls back ledger, history, rejection audit and serving changes together. Direct
 non-Spark callers retain the existing reference-only behavior; production never
-silently falls back after failure. PostgreSQL's committed scorecards remain the
-authority; this is not a separate independently maintained scoreboard.
+silently falls back after failure. The dashboard reads the committed PostgreSQL scorecards.
 
 Duplicates and rejected-only batches do no aggregation. Corrections rebuild the
 entire affected innings, because changing legality can shift later over boundaries.
@@ -93,14 +92,13 @@ producer state live in Docker volumes; deleting those volumes changes recovery.
 | Synthetic finite inputs and global event-time watermark | Use an isolated, licensed replay with controlled disorder and timestamps; measure state, skew and backlog |
 | A Prometheus label per match, including past matches | Bound metric cardinality or move match history to a durable analytics store |
 
-These are proposed investigations, not implemented scaling claims. No new stack,
-warehouse or cloud deployment is required for the present learning milestone.
+These changes have not been implemented or measured.
 
 Snapshots are finite per invocation, but their size scales with all history in
 touched innings, not just the 1000 new Kafka offsets. Ordered window and aggregate
 operations require sorting/shuffles. PostgreSQL access and writes remain serial,
-and execution is still Spark `local[2]`; DataFrame APIs alone do not establish
-distributed scalability. Old serving rows are not migrated automatically: they
+and Spark runs on `local[2]`. This has not been validated on a cluster.
+Old serving rows are not migrated automatically: they
 remain valid reference results until a new accepted event touches that innings.
 
 Executed validation and reproduction commands are recorded in

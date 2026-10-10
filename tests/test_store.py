@@ -96,7 +96,13 @@ class StoreTests(unittest.TestCase):
         correction = copy.deepcopy(self.events[1])
         correction.update(revision_number=2, event_id=self.match + ":fix", batter_runs=6)
         records = [(self.match + ":fix", json.dumps(correction)), (self.match + ":bad", "{bad")]
-        for aggregator in (lambda events: {}, lambda events: (_ for _ in ()).throw(RuntimeError("Spark failed"))):
+        def missing_over_summaries(events):
+            return {}
+
+        def failed_aggregation(events):
+            raise RuntimeError("Spark failed")
+
+        for aggregator in (missing_over_summaries, failed_aggregation):
             with self.assertRaises((ValueError, RuntimeError)):
                 persist(DSN, records, over_aggregator=aggregator)
             self.assertEqual(self.totals(), (17, 2, 6, 4))

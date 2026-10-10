@@ -1,4 +1,4 @@
-"""Cricket-first UI; live statistics read from a consistent PostgreSQL snapshot."""
+"""Match dashboard backed by a consistent PostgreSQL snapshot."""
 import os
 import json
 import base64

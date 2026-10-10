@@ -1,4 +1,4 @@
-# Learn from the initial pipeline
+# Learning guide
 
 ## Trace a delivery
 
@@ -21,13 +21,13 @@
   excludes it? What does the analytics watermark actually measure?
 - Run one match over three partitions: why can one match remain on only one partition?
 
-## Important tradeoff
+## Why rebuild an innings?
 
 Recomputing a short innings is simple and correction-safe. It is not the optimal
 approach for millions of events per entity. Explain the scale boundary instead of
 claiming that a small fixture proves unlimited throughput.
 
-## Explain the new evidence
+## Experiments to explain
 
 - `cricx/simulator.py` generates a seeded match; `producer/service.py` stores its
   identity, delivery payloads and acknowledged cursor. Predict the retry if the
@@ -37,7 +37,7 @@ claiming that a small fixture proves unlimited throughput.
   ordering does not imply ordering across the whole topic.
 - `experiments/verify_watermark.py`: explain the observed one window drop and
   three accepted canonical deliveries. The watermark bounds analytical state;
-  it must not silently remove a correction from the financial/score ledger.
+  it must not remove a correction from the score ledger.
 - `experiments/verify_burst.py`: explain why 2,400 messages become 1,200 deliveries,
   what `maxOffsetsPerTrigger=1000` controls, and why 53 seconds in one run does not
   establish a production SLA. Backlog measures pending source records, not lost data.

@@ -1,4 +1,4 @@
-"""Read-only presentation of canonical match data and actual pipeline telemetry."""
+"""Scorecards, statistics and monitoring tabs."""
 import json
 from html import escape
 from urllib.request import urlopen

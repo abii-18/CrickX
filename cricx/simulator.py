@@ -1,4 +1,4 @@
-"""Seeded India/Australia deliveries with 2023 XIs; synthetic match outcomes."""
+"""Seeded match simulation using selected 2023 World Cup XIs."""
 import random
 from datetime import datetime, timedelta
 from cricx.teams import TEAMS, MATCH_PROFILES, PROFILE

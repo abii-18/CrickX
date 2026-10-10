@@ -1,4 +1,4 @@
-# Initial decisions
+# Design decisions
 
 1. Canonical scoring is independent of analytics watermarks. Valid old deliveries
    reach PostgreSQL; bounded windows may omit old events without corrupting scores.
@@ -18,7 +18,7 @@
    checkpoint/database state remain intact. Stateful partition changes must not
    casually reuse incompatible checkpoints.
 
-## Current boundary
+## Producer controls
 
 Producer acknowledgement waits use a separate send lock, acquired before the
 short-lived state lock. `/new`, `/select` and `/inject` wait on that send lock so
@@ -38,17 +38,17 @@ query measures feed activity, not cricket business aggregates.
 
 ## Spark-native over summaries (2026-10-10)
 
-The isolated enhancement computes the existing over serving rows with Spark
-SQL window expressions and `groupBy` sums. Input is the accepted current ledger
+Spark computes the existing over summaries with SQL window expressions and
+`groupBy` sums. Input is the accepted current ledger
 snapshot inside the existing transaction, not raw messages. PostgreSQL retains
 all duplicate/revision/conflict decisions and row locks. Reusing the original
 snapshot SELECT avoids additional database reads; all touched innings share one
 aggregation action. Python reference output is the mandatory reconciliation gate,
 so a Spark mismatch fails atomically rather than publishing divergent scores.
 
-This deliberately retains the reference scorer and driver-side ledger acceptance.
-It provides a verifiable Spark business transformation, not a throughput upgrade
-or a full distributed scoring rewrite. Full affected-innings recomputation is
+Ledger acceptance and the reference scorer still run on the driver. Spark
+computes over summaries; this change does not establish higher throughput.
+Full affected-innings recomputation is
 necessary when a correction changes legal-ball counts. No watermark applies to
 this stage, and there is no new streaming state, schema, service or checkpoint.
 Existing feed-window counts still include duplicate/correction messages and must
@@ -58,7 +58,6 @@ again and a process restart resets it. Sink errors still use the existing alert.
 
 See [executed checks and limits](../experiments/spark_over_aggregation.md).
 
-Beyond this bounded enhancement, the architecture is frozen while streaming fundamentals are learned. Distributed
-business analytics, larger datasets, lake/warehouse services and cloud deployment
-are deferred. ARM64 image manifests have been checked; ARM64 runtime behavior has
-not been demonstrated. See the changelog and experiment reports for dated evidence.
+Larger datasets, additional analytics and cloud deployment are deferred. ARM64
+image manifests have been checked, but ARM64 execution has not been tested.
+The changelog and experiment reports record the checks performed.

@@ -1,31 +1,37 @@
 # CricX
 
-Streaming cricket analytics and pipeline reliability. **Simulated data only.**
+A ball-by-ball cricket simulator using selected 2023 World Cup XIs.
+**All match outcomes are simulated.**
 
 Python replay → Kafka → PySpark Structured Streaming → PostgreSQL → Streamlit.
-Prometheus and Grafana expose processing outcomes, backlog and failures.
+Prometheus and Grafana track processing outcomes, backlog and failures.
 
 ![Tests](https://github.com/abii-18/CrickX/actions/workflows/tests.yml/badge.svg)
 
-A cricket streaming portfolio project focused on duplicate handling, delivery
-corrections, event-time behavior and failure recovery. Uses selected 2023 World
-Cup XIs with synthetic outcomes; it is not a live sports feed.
+The pipeline handles late deliveries, duplicates, corrections and replay after
+a failure. PostgreSQL stores the accepted deliveries and scorecards.
 
 ![CricX match gallery and live scorecard](docs/images/dashboard.png)
 
 [Full screenshot gallery](screenshots/README.md) · [Architecture and limits](docs/architecture.md) · [Short demo and evidence](docs/demo.md) ·
 [Design decisions](docs/design_decisions.md) · [Learning guide](docs/learning_guide.md) ·
-[Engineering changelog](docs/progress.md)
+[Engineering changelog](docs/progress.md) · [Spark aggregation validation report](experiments/spark_over_aggregation.md)
 
 ## Status
 
-Working local pipeline with seeded simulator and dashboard start/pause/resume controls.
-All 18 tests passed, alongside end-to-end simulation, database outage recovery,
-consumer-group/order, watermark handling and finite duplicate burst experiments.
-See `experiments/initial_validation.md`, `experiments/simulator_validation.md` and `docs/demo.md`.
-The stadium dashboard includes a selectable six-fixture match gallery. Cloud deployment is deferred.
-The architecture is frozen for streaming fundamentals and interview preparation.
-No paid services or cloud resources have been provisioned.
+The pipeline runs in Docker. You can choose from six match fixtures and start,
+pause or resume a replay from the dashboard.
+
+There are **27 tests**: 17 Python/producer tests, 6 PostgreSQL tests and 4 Spark
+tests. The latest Docker run passed **23 tests**. The 4 Spark tests passed in a
+separate run and are not included in CI. See the
+[Spark test report](experiments/spark_over_aggregation.md) for the results.
+
+Earlier replay, outage, ordering, watermark and burst checks are recorded in
+[initial validation](experiments/initial_validation.md),
+[simulator validation](experiments/simulator_validation.md) and [the demo report](docs/demo.md).
+
+Cloud deployment is still pending. The current setup uses no paid services.
 
 ## Run locally
 
@@ -72,9 +78,11 @@ The private control API is available only within the Docker network.
 Synthetic event time advances one second per generated delivery, independently
 of replay speed; accelerated replay therefore differs from a wall-clock live feed.
 
-Pure scoring tests need only Python:
+To run the Python tests, install the two dependencies below. These tests do not
+need a running Kafka broker. Database and Spark tests are skipped in this run:
 
 ```powershell
+python -m pip install 'kafka-python==2.1.2' 'prometheus-client==0.21.1'
 python -m unittest discover -s tests -v
 ```
 
@@ -83,6 +91,17 @@ Database integration tests run inside Docker:
 ```powershell
 docker compose --profile tools run --rm --build test
 ```
+
+Run the four Spark tests separately in the existing Spark image:
+
+```powershell
+docker compose build spark
+docker compose run --rm --no-deps spark /opt/spark/bin/spark-submit --master local[2] --driver-memory 512m tests/run_spark_tests.py
+```
+
+Start PostgreSQL before running the Spark tests. The
+[Spark report](experiments/spark_over_aggregation.md) also covers the Kafka replay
+and restart checks.
 
 The base fixture has **17 runs, 2 wickets, 6 legal balls, 4 extras**. Its correction
 changes a four to a six: **19 runs**. Replaying it must not inflate totals.
@@ -125,22 +144,19 @@ use only when intentionally discarding the demonstration. It deletes no cloud VM
 
 ## CI and cost
 
-GitHub Actions runs Python tests (including threaded producer HTTP regression tests)
-and a separate PostgreSQL 16 integration job
-on pushes and pull requests. It does not start Kafka or Spark, deploy anything,
-upload artifacts or enable dependency caches. Both jobs have ten-minute limits.
+GitHub Actions runs the Python and PostgreSQL tests on each push and pull request.
+The Python job includes the producer concurrency tests. Neither job starts Kafka
+or Spark. Both have a ten-minute timeout.
 Jobs run only when the repository is public. Standard hosted runners in public
 repositories are [free under GitHub's documented policy](https://docs.github.com/en/actions/concepts/billing-and-usage).
 Making this repository private disables these jobs until explicitly reconfigured.
-The four opt-in Spark aggregation tests remain Docker-only and are not part of CI.
+The four Spark tests currently run through Docker, not CI.
 
-Cloud deployment is deferred. Current verification is on local Docker, so a
-cloud-hosted demo remains unfulfilled. The previous cloud plan is retained in
-`docs/cloud_demo.md` as unexecuted planning, not as deployment evidence.
+The project has only been tested in local Docker. The cloud demo is still planned;
+`docs/cloud_demo.md` describes the proposed setup.
 
-## Development and attribution
+## AI assistance
 
-This project was developed with substantial AI assistance for implementation,
-documentation and test execution. Test results show behavior for the recorded
-cases; they do not demonstrate the owner's interview readiness or independent
-authorship. The learning guide provides questions to explain and defend the design.
+AI tools helped with the code, documentation and testing. The
+[learning guide](docs/learning_guide.md) covers the design choices and questions
+to work through when learning the project.

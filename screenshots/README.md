@@ -1,15 +1,15 @@
 # CricX screenshots
 
-Recaptured from the running local Docker stack on 2026-10-10 after the five-tab dashboard redesign. All 17 previous images have been replaced. The primary Streamlit captures show the completed India–New Zealand simulation so both innings and the redesigned charts are visible. Cricket outcomes are synthetic. These snapshots are evidence of the captured state, not a cloud deployment or a performance benchmark.
+Recaptured from the running local Docker stack on 2026-10-10 after the five-tab dashboard redesign. The primary Streamlit captures show the completed India–New Zealand simulation so both innings and the redesigned charts are visible. Cricket outcomes are synthetic. These snapshots are evidence of the captured state, not a cloud deployment or a performance benchmark.
 
-**Capture types:** Streamlit, Prometheus and Grafana images are actual browser UI screenshots. Docker, PostgreSQL, Kafka and Spark evidence images render unmodified live command output for readability; they are not screenshots of Docker Desktop, pgAdmin or Spark UI. Raw outputs are retained in [evidence](evidence). The native desktop capture helper was unavailable.
+**Capture types:** Streamlit, Prometheus and Grafana images are actual browser UI screenshots. Docker, PostgreSQL, Kafka and Spark evidence images render unmodified live command output for readability; they are not screenshots of Docker Desktop, pgAdmin or Spark UI. Raw outputs are retained in [evidence](evidence).
 
 | Area | Screenshot | Description |
 | --- | --- | --- |
-| Docker | [docker-services.png](docker-services.png) | Live command-output evidence rendered in a browser; no GUI claim. |
-| Docker | [docker-resources.png](docker-resources.png) | Live command-output evidence rendered in a browser; no GUI claim. |
-| Postgres | [postgres-schema.png](postgres-schema.png) | Live command-output evidence rendered in a browser; no GUI claim. |
-| Postgres | [postgres-scorecards.png](postgres-scorecards.png) | Live command-output evidence rendered in a browser; no GUI claim. |
+| Docker | [docker-services.png](docker-services.png) | Running services and image versions. |
+| Docker | [docker-resources.png](docker-resources.png) | Container CPU and memory snapshot. |
+| Postgres | [postgres-schema.png](postgres-schema.png) | PostgreSQL version and tables. |
+| Postgres | [postgres-scorecards.png](postgres-scorecards.png) | Stored innings scores. |
 | Streamlit | [streamlit-live-match.png](streamlit-live-match.png) | Live Match tab, completed India–New Zealand saved simulation |
 | Streamlit | [streamlit-scorecards.png](streamlit-scorecards.png) | Actual Streamlit Scorecards tab |
 | Streamlit | [streamlit-player-stats.png](streamlit-player-stats.png) | Actual Streamlit Player Stats tab |
@@ -45,22 +45,22 @@ Spark metrics were retrieved read-only from `http://spark:9101/metrics` inside t
 
 ## Selected previews
 
-### Streamlit
+**Streamlit**
 
 ![Live cricket scorecard](streamlit-live-match.png)
 
-### PostgreSQL
+**PostgreSQL**
 
 ![PostgreSQL tables and canonical counts](postgres-schema.png)
 
-### Docker
+**Docker**
 
 ![Docker Compose services and images](docker-services.png)
 
-### Prometheus
+**Prometheus**
 
 ![Prometheus scrape targets](prometheus-targets.png)
 
-### Grafana
+**Grafana**
 
 ![Grafana pipeline metrics](grafana-pipeline.png)

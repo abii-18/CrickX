@@ -1,9 +1,10 @@
 > Status: deferred, unexecuted planning. No account or resources have been created.
 > These historical cost checks must be reverified before any future deployment.
 
-# One-day cloud demo — preparation, not a deployed environment
+# Proposed one-day cloud demo
 
-Verified October 10, 2026. No account or infrastructure has been created by this project.
+The following checks were recorded on October 10, 2026. No cloud account or
+infrastructure has been created for this project.
 
 ## Cost boundary
 

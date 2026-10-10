@@ -26,8 +26,7 @@ def main():
             acks="all", retries=5, value_serializer=lambda value: json.dumps(value).encode())
     print(f"Replaying SIMULATED match {match}", flush=True)
     events = fixture(match)
-    # Fixed IDs AND event timestamps make identical logical replay truly identical.
-    # Fixture event times intentionally remain historical; arrival time is separate.
+    # Keep IDs and timestamps fixed so replay preserves delivery identity.
     for event in events:
         producer.send("match-events", key=match.encode(), value=event).get(timeout=30)
         print(event["event_id"], flush=True)

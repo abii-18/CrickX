@@ -1,4 +1,4 @@
-# Short demo and verification evidence
+# Demo and recorded results
 
 All screenshots below were captured from the running local Docker stack on
 2026-10-10. They show synthetic cricket data. Assertions and recorded JSON provide
@@ -16,8 +16,6 @@ correctness evidence; an image alone does not prove deduplication or recovery.
 4. Show the outage and restored scorecard. PostgreSQL was stopped while a new
    finite replay entered Kafka; restored processing committed all 17 deliveries.
 5. Show the newly routed processor-down alert and describe the known scaling limits.
-
-This is a guided demonstration, not a load benchmark or a claim of production HA.
 
 ## Recorded results
 
@@ -38,7 +36,7 @@ they are separate observations, not measurements of this demo.
 
 ## Screenshots
 
-### Duplicate and invalid-event test
+**Duplicate and invalid events**
 
 The Monitoring tab displays both acknowledged sends and accepted deliveries for
 the selected synthetic match. The verifier additionally compares committed scores
@@ -46,18 +44,18 @@ with the reference scorer and asserts the audit row count.
 
 ![Duplicate test: acknowledged messages and accepted deliveries](images/duplicate.png)
 
-### Recovered scorecard
+**Recovered scorecard**
 
 ![Correct two-innings scores after database recovery](images/recovery.png)
 
-### Actual processor-down alert
+**Processor-down alert**
 
 The verifier requires a firing notification newer than the recorded start of this
 experiment, so a historical alert cannot satisfy the check.
 
 ![New processor-down notification in the dashboard](images/alert.png)
 
-## Reproduce explicitly
+## Reproduce the demo
 
 These commands temporarily stop this project's PostgreSQL and Spark services.
 Run them when interrupting the local demo is acceptable. Keep data/checkpoint
@@ -93,7 +91,7 @@ Evidence accumulates in `/tmp/cricx-demo.json` inside the dashboard container.
 A container recreation removes that temporary file. Start from a fresh dashboard
 container for a separate demo session. The scorer is the same reference model as
 the sink; independent fixed expected totals and SQL transaction tests provide
-additional validation, rather than treating self-comparison as exhaustive proof.
+additional coverage; comparison with the same scorer is not an independent proof.
 
 Recovery retries may briefly leave Spark unavailable; the verifier waits up to
 120 seconds for committed scores. This does not establish an RTO or SLA. The

@@ -11,18 +11,16 @@ ledger snapshot additionally enters a finite Spark DataFrame. A partitioned,
 raw-sequence-ordered prefix window computes preceding legal balls, followed by
 `floor(legal_before / 6)` and match/innings/over `groupBy` sums for runs, wickets
 and legal balls. Verified Spark rows supply the existing `over_summary` table.
-Exact reference agreement is required before commit. No Python UDF, new table,
-new query, service, dependency, Compose change or checkpoint is introduced.
+Exact reference agreement is required before commit. This uses the existing schema, services and checkpoints, without Python UDFs.
 
-The Python reference remains the correctness gate; PostgreSQL's committed serving
-tables remain authoritative. Raw Kafka messages never directly become over sums.
+Spark aggregates the accepted ledger snapshot, not raw Kafka messages.
 Acceptance removes identical duplicates, replaces slots with higher revisions,
 and audits stale/conflicting revisions before Spark sees a snapshot. A legality
 correction rebuilds all overs in its innings. Raw sequence determines ordering;
 old event timestamps do not prevent canonical rebuilds. The unrelated analytics
 watermark can still drop those messages from feed counts.
 
-## Checks actually run
+## Validation results
 
 | Check | Observed result |
 | --- | --- |
@@ -87,12 +85,11 @@ The new metric is `cricx_spark_verified_over_rows_total`; it counts observed
 committed rebuild output rows, not distinct deliveries/overs. It resets on restart.
 Existing sink-error and processor-down alerts still cover failures of this stage.
 
-## Limits and next step
+## Limitations
 
 This does not remove driver-side Kafka batching, ledger acceptance, Python
 reference scoring or serial SQL writes. The source batch is capped at 1000 offsets,
 but snapshots include full touched-innings histories and thus can be larger.
-No history is accumulated across invocations in a new Python state structure.
 Only aggregate output is collected from Spark for reconciliation; creating its
 input still starts from the driver-read canonical ledger. There is no distributed
 database read or write, and Spark runs on `local[2]`.
@@ -101,5 +98,4 @@ Spark sorting/shuffles and the reference comparison add work while database lock
 are held. Old committed rows remain valid and are recalculated with Spark only
 when a new accepted event touches that innings. Sequence gaps remain provisional;
 full cricket-law enforcement has not been added. This preserves retry-safe
-transaction effects, not end-to-end exactly-once processing. Next, measure snapshot
-memory, SQL round trips and lock duration before changing the acceptance boundary.
+transaction effects, not end-to-end exactly-once processing. Snapshot memory, SQL round trips and lock duration still need measurement.

@@ -1,10 +1,9 @@
 # ODI dashboard validation — October 10, 2026
 
-The Option A reference embedded in the relocated v2 specification was inspected.
-The dashboard now follows its cricket-first arrangement: match banner, compact
+This report records the first dashboard revision based on the v2 specification: match banner, compact
 controls, current-over markers, score/overs/rate cards, batting/bowling tables,
 progression/worm charts, partnership, innings phases and fall-of-wicket panels.
-The stadium treatment is a CSS illustration rather than a copy of the mockup photo.
+At this stage, the stadium background was a CSS illustration.
 
 India/Australia names use the 2023 final XIs, verified against the
 [ICC report](https://www.icc-cricket.com/news/awesome-australia-beat-india-to-win-the-icc-mens-cricket-world-cup).

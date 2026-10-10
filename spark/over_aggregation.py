@@ -26,7 +26,6 @@ def aggregate_overs(frame):
 
 
 def compute_over_summaries(spark, events):
-    # Only field projection happens in Python; cricket arithmetic happens in Spark.
     rows = [(e["match_id"], e["innings_number"], e["raw_delivery_sequence"],
              e["batter_runs"], e["extras"]["wides"], e["extras"]["no_balls"],
              e["extras"]["byes"], e["extras"]["leg_byes"], e["wicket_type"])

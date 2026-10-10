@@ -1,4 +1,4 @@
-"""Read-only chart/card derivations from canonical accepted delivery payloads."""
+"""Chart and card summaries from accepted deliveries."""
 from cricx.events import total_runs, legal as is_legal
 
 
