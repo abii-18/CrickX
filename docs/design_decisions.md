@@ -18,10 +18,14 @@
    checkpoint/database state remain intact. Stateful partition changes must not
    casually reuse incompatible checkpoints.
 
-## Remaining work
+## Current boundary
 
-Continuous cricket-valid simulator; start/pause controls; completion/gap state;
-persisted match time origin; producer and host exporters; alert notification routing;
-full supported-scoring fixtures; automated container recovery/outage tests; ARM64
-verification; one-day cloud demonstration and evidence. No result is claimed before
-it is run and recorded.
+The simulator, replay controls, match gallery and private alert route are implemented.
+Canonical scoring runs in driver-side Python inside `foreachBatch`; this is a
+correctness tradeoff at demo scale, not distributed scoring. The Spark window
+query measures feed activity, not cricket business aggregates.
+
+The architecture is frozen while streaming fundamentals are learned. Distributed
+business analytics, larger datasets, lake/warehouse services and cloud deployment
+are deferred. ARM64 image manifests have been checked; ARM64 runtime behavior has
+not been demonstrated. See the changelog and experiment reports for dated evidence.

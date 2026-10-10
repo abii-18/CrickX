@@ -5,13 +5,26 @@ Streaming cricket analytics and pipeline reliability. **Simulated data only.**
 Python replay → Kafka → PySpark Structured Streaming → PostgreSQL → Streamlit.
 Prometheus and Grafana expose processing outcomes, backlog and failures.
 
+![Tests](https://github.com/abii-18/CrickX/actions/workflows/tests.yml/badge.svg)
+
+A cricket streaming portfolio project focused on duplicate handling, delivery
+corrections, event-time behavior and failure recovery. Uses selected 2023 World
+Cup XIs with synthetic outcomes; it is not a live sports feed.
+
+![CricX match gallery and live scorecard](docs/images/dashboard.png)
+
+[Architecture and limits](docs/architecture.md) · [Short demo and evidence](docs/demo.md) ·
+[Design decisions](docs/design_decisions.md) · [Learning guide](docs/learning_guide.md) ·
+[Engineering changelog](docs/progress.md)
+
 ## Status
 
 Working local pipeline with seeded simulator and dashboard start/pause/resume controls.
-All 17 tests passed, alongside end-to-end simulation, database outage recovery,
+All 18 tests passed, alongside end-to-end simulation, database outage recovery,
 consumer-group/order, watermark handling and finite duplicate burst experiments.
-See `experiments/initial_validation.md` and `experiments/simulator_validation.md`.
-The stadium dashboard includes a selectable six-fixture match gallery. Cloud deployment is pending.
+See `experiments/initial_validation.md`, `experiments/simulator_validation.md` and `docs/demo.md`.
+The stadium dashboard includes a selectable six-fixture match gallery. Cloud deployment is deferred.
+The architecture is frozen for streaming fundamentals and interview preparation.
 No paid services or cloud resources have been provisioned.
 
 ## Run locally
@@ -101,6 +114,8 @@ changes a four to a six: **19 runs**. Replaying it must not inflate totals.
   scalability. Innings rebuilds are appropriate for small demos, not unlimited scale.
 - Metrics count observed commit outcomes; replay/restarts can affect counter totals.
   Backlog is based on successful Spark progress, not consumer-group commits.
+  Rejections count new audit rows; `rejection_replayed` counts retried source keys
+  already present in the audit table.
 
 ## Cleanup
 
@@ -108,12 +123,22 @@ changes a four to a six: **19 runs**. Replaying it must not inflate totals.
 `docker compose down -v` **deletes this project's local data and checkpoints**;
 use only when intentionally discarding the demonstration. It deletes no cloud VM.
 
-## Deployment gate
+## CI and cost
 
-Before the one-day cloud demo: finish independent fixtures, integration/failure tests,
-ARM64 image checks, resource measurements, experiment writeups and clean-checkout
-validation. Use verified OCI Always Free resources only, on an unupgraded account.
-If free capacity is unavailable, deployment remains pending. No paid fallback.
-Capture evidence before deleting VM, volumes and other temporary resources.
-See `docs/cloud_demo.md` for current limits, pending checks and the bounded-resource
-Compose overlay. Cloud eligibility is not implied by passing local tests.
+GitHub Actions runs pure-Python tests and a separate PostgreSQL 16 integration job
+on pushes and pull requests. It does not start Kafka or Spark, deploy anything,
+upload artifacts or enable dependency caches. Both jobs have ten-minute limits.
+Jobs run only when the repository is public. Standard hosted runners in public
+repositories are [free under GitHub's documented policy](https://docs.github.com/en/actions/concepts/billing-and-usage).
+Making this repository private disables these jobs until explicitly reconfigured.
+
+Cloud deployment is deferred. Current verification is on local Docker, so a
+cloud-hosted demo remains unfulfilled. The previous cloud plan is retained in
+`docs/cloud_demo.md` as unexecuted planning, not as deployment evidence.
+
+## Development and attribution
+
+This project was developed with substantial AI assistance for implementation,
+documentation and test execution. Test results show behavior for the recorded
+cases; they do not demonstrate the owner's interview readiness or independent
+authorship. The learning guide provides questions to explain and defend the design.

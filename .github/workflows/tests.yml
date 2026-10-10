@@ -1,0 +1,58 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    # Standard runners are free in public repos. Disable if made private so this
+    # project cannot consume paid private-repo minutes without an explicit change.
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Pure Python tests
+        run: python -m unittest discover -s tests -v
+
+  postgres:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16.8
+        env:
+          POSTGRES_DB: cricx_test
+          POSTGRES_USER: cricx_test
+          # Disposable CI database only; never a project or production secret.
+          POSTGRES_PASSWORD: ci_test_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cricx_test -d cricx_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      CRICX_TEST_DATABASE_URL: postgresql://cricx_test:ci_test_only@localhost:5432/cricx_test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install sink dependency
+        run: python -m pip install 'psycopg[binary]==3.2.6'
+      - name: PostgreSQL integration tests
+        run: python -m unittest discover -s tests -p test_store.py -v

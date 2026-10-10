@@ -1,0 +1,87 @@
+{
+  "original": {
+    "match_id": "sim-8246afe54a4a",
+    "cursor": 55,
+    "rate": 2.0,
+    "running": false
+  },
+  "duplicate": {
+    "match_id": "sim-7576ffc7c20c",
+    "accepted": 17,
+    "scorecards": [
+      [
+        1,
+        14,
+        0,
+        12,
+        1
+      ],
+      [
+        2,
+        15,
+        0,
+        5,
+        0
+      ]
+    ],
+    "verified_at": "2026-10-10T10:36:42.264736+00:00",
+    "acknowledged_messages": 19,
+    "invalid_audit_rows": 1
+  },
+  "recovery_queued": {
+    "match_id": "sim-6ad3137de878",
+    "expected": 17,
+    "acknowledged": 17,
+    "queued_at": "2026-10-10T10:37:35.983418+00:00"
+  },
+  "verify-recovery": {
+    "match_id": "sim-6ad3137de878",
+    "accepted": 17,
+    "scorecards": [
+      [
+        1,
+        14,
+        0,
+        12,
+        1
+      ],
+      [
+        2,
+        15,
+        0,
+        5,
+        0
+      ]
+    ],
+    "verified_at": "2026-10-10T10:39:02.681158+00:00"
+  },
+  "verify-restart": {
+    "match_id": "sim-6ad3137de878",
+    "accepted": 17,
+    "scorecards": [
+      [
+        1,
+        14,
+        0,
+        12,
+        1
+      ],
+      [
+        2,
+        15,
+        0,
+        5,
+        0
+      ]
+    ],
+    "verified_at": "2026-10-10T10:39:03.633076+00:00"
+  },
+  "alert_after": "2026-10-10T10:39:31.191302+00:00",
+  "alert": {
+    "name": "CricXProcessorUnavailable",
+    "status": "firing",
+    "summary": "CricX Spark metrics endpoint is unavailable",
+    "received_at": "2026-10-10T10:40:17.321582+00:00"
+  },
+  "restored_paused_at": "2026-10-10T10:41:05.835270+00:00"
+}

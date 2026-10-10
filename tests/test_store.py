@@ -4,6 +4,7 @@ import json
 import os
 import unittest
 import uuid
+import tempfile
 from unittest.mock import patch
 
 DSN = os.getenv("CRICX_TEST_DATABASE_URL")
@@ -11,6 +12,16 @@ DSN = os.getenv("CRICX_TEST_DATABASE_URL")
 
 @unittest.skipUnless(DSN, "requires disposable PostgreSQL test connection")
 class StoreTests(unittest.TestCase):
+    def test_initialize_outside_repository_directory(self):
+        from cricx.store import initialize
+        previous = os.getcwd()
+        with tempfile.TemporaryDirectory() as directory:
+            try:
+                os.chdir(directory)
+                initialize(DSN)
+            finally:
+                os.chdir(previous)
+
     def setUp(self):
         import psycopg
         from cricx.store import initialize
@@ -68,7 +79,12 @@ class StoreTests(unittest.TestCase):
     def test_invalid_event_audit_is_retry_safe(self):
         from cricx.store import persist
         records = [(f"{self.match}:invalid", "{broken json")]
-        persist(DSN, records); persist(DSN, records)
+        first = persist(DSN, records)
+        replay = persist(DSN, records)
+        self.assertEqual(first["rejected"], 1)
+        self.assertEqual(first["rejection_replayed"], 0)
+        self.assertEqual(replay["rejected"], 0)
+        self.assertEqual(replay["rejection_replayed"], 1)
         self.assertIsNone(self.totals())
         with self.psycopg.connect(DSN) as conn:
             count = conn.execute("SELECT count(*) FROM rejected_events WHERE source_key=%s", (records[0][0],)).fetchone()[0]

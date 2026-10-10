@@ -10,7 +10,8 @@ from cricx.scoring import score
 
 def initialize(dsn):
     with psycopg.connect(dsn) as conn:
-        conn.execute(Path("database/schema.sql").read_text())
+        schema = Path(__file__).resolve().parent.parent / "database" / "schema.sql"
+        conn.execute(schema.read_text(encoding="utf-8"))
 
 
 def persist(dsn, records):
@@ -54,8 +55,8 @@ def persist(dsn, records):
                     counts["corrected" if existing else "accepted"] += 1
                     touched.add((match, innings))
             if reason is not None:
-                conn.execute("INSERT INTO rejected_events(source_key,reason,raw_payload) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING", (source_key, reason, raw))
-                counts["rejected"] += 1
+                inserted = conn.execute("INSERT INTO rejected_events(source_key,reason,raw_payload) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING RETURNING rejection_id", (source_key, reason, raw)).fetchone()
+                counts["rejected" if inserted else "rejection_replayed"] += 1
         for match, innings in sorted(touched):
             events = [row[0] for row in conn.execute("SELECT payload FROM delivery_events WHERE match_id=%s AND innings_number=%s", (match, innings))]
             result = score(events)[(match, innings)]
