@@ -11,6 +11,7 @@ from psycopg.rows import dict_row
 import streamlit as st
 from dashboard.models import summarize, over_text
 from dashboard.flags import flag_svg
+from dashboard.panels import render_tabs
 from cricx.teams import TEAMS, MATCH_PROFILES, PROFILE
 
 st.set_page_config(page_title="CricX · Match Centre", page_icon="🏏", layout="wide")
@@ -316,38 +317,10 @@ def live():
             title("Match Info")
             html(f'<div class="matchinfo"><b>Format</b><span>{limit}-over simulation</span><b>Players</b><span>Selected 2023 World Cup XIs</span><b>Venue</b><span>Virtual stadium</span><b>Status</b><span>{label}</span><b>Source</b><span>CricX Event Simulator</span><b>Extras</b><span>{current_card["extras"]}</span></div>')
         if cards: st.caption(f"Last accepted score update: {cards[-1]['updated_at']} · Refreshes every 3 seconds")
-    with score_tab:
-        for innings in (1, 2):
-            st.subheader(teams[innings-1])
-            a, b = st.columns(2)
-            with a, st.container(border=True): batting_rows(innings, batters, True, team=teams[innings-1])
-            with b, st.container(border=True): bowling_rows(innings, bowlers)
-    with player_tab:
-        st.subheader("Player Performance · This Simulation")
-        batting_rows(1, batters, True, team=teams[0])
-        batting_rows(2, batters, True, team=teams[1])
-        with st.expander("Selected XIs · 2023 World Cup squads"):
-            a, b = st.columns(2)
-            a.write("**" + teams[0] + "**\n\n" + "\n\n".join(TEAMS[teams[0]][1]))
-            b.write("**" + teams[1] + "**\n\n" + "\n\n".join(TEAMS[teams[1]][1]))
-    with team_tab:
-        st.subheader("Team Comparison")
-        table([dict(card, team=teams[card["innings_number"]-1], overs=over_text(card["legal_balls"])) for card in cards], [("Team", "team"), ("Runs", "runs"), ("Wickets", "wickets"), ("Overs", "overs"), ("Extras", "extras")])
-    with analytics_tab:
-        st.subheader("Runs per Over")
-        chart([dict(overs=row["over_number"]+1, runs=row["runs"], team=teams[row["innings_number"]-1]) for row in over_rows], True, teams)
-        for innings in (1, 2):
-            title(teams[innings-1] + " · Fall of Wickets")
-            table(data[innings]["wickets"], [("#", "#"), ("Score", "Score"), ("Over", "Over"), ("Player", "Player")])
-        st.caption("Charts derive from accepted canonical deliveries; corrections update them.")
-    with monitor_tab:
-        st.subheader("Pipeline Monitoring")
-        st.markdown("[Open Grafana](http://localhost:3000/d/cricx/cricx-pipeline) · [Open Prometheus](http://localhost:9090/alerts)")
-        st.caption(f"Selected match: {match} · Accepted deliveries: {len(payloads)} · Status: {label}")
-        st.caption(f"Active producer acknowledged: {status.get('cursor', 'unavailable')} / {status.get('total', 'unavailable')} · {status.get('match_id', 'not started')}")
-        if status.get("error"): st.error(f"Producer error: {status['error']}")
-        table(list(reversed(status.get("alerts", []))), [("Alert", "name"), ("Status", "status"), ("Received", "received_at")])
-        st.caption("Operational health comes from Prometheus/Grafana.")
+    render_tabs((score_tab, player_tab, team_tab, analytics_tab, monitor_tab),
+                teams, cards, batters, bowlers, payloads, over_rows, data, limit,
+                status, match, label, batting_rows, bowling_rows, table, chart)
+
 
 
 live()
