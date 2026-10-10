@@ -5,6 +5,7 @@ import re
 import threading
 import time
 import uuid
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -15,6 +16,9 @@ from cricx.teams import PROFILE
 
 STATE = Path(os.environ.get("SIMULATOR_STATE", "/state/run.json"))
 LOCK = threading.RLock()
+# Lock ordering: SEND_LOCK then LOCK. Reset/select/inject must not move an
+# in-flight slot; reads, pause/resume, speed and alerts only need the state lock.
+SEND_LOCK = threading.Lock()
 SENT = Counter("cricx_producer_acknowledged_total", "Kafka acknowledged deliveries")
 ERRORS = Counter("cricx_producer_errors_total", "Failed sends; cursor remains unchanged")
 ACTIVE = Gauge("cricx_producer_active", "Simulator running")
@@ -54,7 +58,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         with LOCK:
             expected = len({(event["innings_number"], event["raw_delivery_sequence"]) for event in state["events"] if "raw_delivery_sequence" in event})
-            self.respond({k: v for k, v in state.items() if k != "events"} | {"total": len(state["events"]), "expected_deliveries": expected})
+            snapshot = {k: v for k, v in state.items() if k != "events"} | {"total": len(state["events"]), "expected_deliveries": expected}
+        self.respond(snapshot)
 
     def do_POST(self):
         try:
@@ -62,7 +67,9 @@ class Handler(BaseHTTPRequestHandler):
             if length > 65536:
                 raise ValueError("request too large")
             data = json.loads(self.rfile.read(length) or b"{}")
-            with LOCK:
+            # Preserve serialization and existing response codes for commands
+            # that replace/reorder the pending slot, without blocking readers.
+            with SEND_LOCK if self.path in ("/new", "/select", "/inject") else nullcontext(), LOCK:
                 if self.path == "/alerts":
                     notifications = state.get("alerts", [])
                     for alert in data.get("alerts", []):
@@ -120,9 +127,40 @@ class Handler(BaseHTTPRequestHandler):
                 else:
                     raise ValueError("unknown command")
                 save()
+                ACTIVE.set(int(state["running"]))
             self.respond({"ok": True})
         except (ValueError, TypeError, KeyError) as exc:
             self.respond({"error": str(exc)}, 400)
+
+
+def send_next(producer):
+    """At most one in-flight send; cursor advances only after acknowledgement."""
+    with SEND_LOCK:
+        with LOCK:
+            ACTIVE.set(int(state["running"]))
+            if not state["running"]:
+                return 0.2
+            event = state["events"][state["cursor"]]
+        try:
+            # Both send() (which can block) and acknowledgement wait are outside LOCK.
+            producer.send("match-events", key=(event.get("match_id") or "invalid-demo").encode(), value=event).get(timeout=20)
+            with LOCK:
+                SENT.inc()
+                state["cursor"] += 1
+                state["error"] = None
+                # An HTTP pause during the wait must not be overwritten by success.
+                state["running"] = state["running"] and state["cursor"] < len(state["events"])
+                ACTIVE.set(int(state["running"]))
+                save()
+        except Exception as exc:
+            with LOCK:
+                ERRORS.inc()
+                state["error"] = type(exc).__name__
+                state["running"] = False
+                ACTIVE.set(0)
+                save()
+        with LOCK:
+            return 1 / state["rate"]
 
 
 def replay():
@@ -140,25 +178,7 @@ def replay():
                     save()
                 time.sleep(5)
                 continue
-        delay = 0.2
-        with LOCK:
-            ACTIVE.set(int(state["running"]))
-            if state["running"]:
-                event = state["events"][state["cursor"]]
-                try:
-                    producer.send("match-events", key=(event.get("match_id") or "invalid-demo").encode(), value=event).get(timeout=20)
-                    SENT.inc()
-                    state["cursor"] += 1
-                    state["error"] = None
-                    state["running"] = state["cursor"] < len(state["events"])
-                    save()
-                except Exception as exc:
-                    ERRORS.inc()
-                    state["error"] = type(exc).__name__
-                    state["running"] = False
-                    save()
-                delay = 1 / state["rate"]
-        time.sleep(delay)
+        time.sleep(send_next(producer))
 
 
 if __name__ == "__main__":

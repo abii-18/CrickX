@@ -20,6 +20,17 @@
 
 ## Current boundary
 
+Producer acknowledgement waits use a separate send lock, acquired before the
+short-lived state lock. `/new`, `/select` and `/inject` wait on that send lock so
+an in-flight slot cannot be replaced or reordered before its cursor is committed.
+GET, pause/resume, speed and alert requests remain responsive while Kafka waits.
+Pause stops subsequent sends; it cannot cancel the already submitted delivery.
+Timeouts leave the cursor unchanged, record the error and require explicit resume.
+The existing successful/invalid HTTP responses remain 200/400. Queue-changing
+commands can still wait for the acknowledgement timeout; this is intentional.
+Python CI installs only Kafka-client and metrics dependencies for these tests;
+it does not start Kafka or Spark. Spark tests remain opt-in Docker checks.
+
 The simulator, replay controls, match gallery and private alert route are implemented.
 Canonical scoring runs in driver-side Python inside `foreachBatch`; this is a
 correctness tradeoff at demo scale, not distributed scoring. The Spark window

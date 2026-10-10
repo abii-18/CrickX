@@ -1,9 +1,9 @@
-NAME                   IMAGE                       COMMAND                  SERVICE        CREATED         STATUS                    PORTS
-cricx-alertmanager-1   prom/alertmanager:v0.28.1   "/bin/alertmanager -…"   alertmanager   4 hours ago     Up 4 hours                9093/tcp
-cricx-dashboard-1      cricx-dashboard             "streamlit run dashb…"   dashboard      6 minutes ago   Up 6 minutes              127.0.0.1:8501->8501/tcp
-cricx-grafana-1        grafana/grafana:11.6.0      "/run.sh"                grafana        15 hours ago    Up 4 hours                127.0.0.1:3000->3000/tcp
-cricx-kafka-1          apache/kafka:3.9.0          "/__cacert_entrypoin…"   kafka          15 hours ago    Up 4 hours (healthy)      127.0.0.1:9092->9092/tcp
-cricx-postgres-1       postgres:16.8               "docker-entrypoint.s…"   postgres       15 hours ago    Up 10 minutes (healthy)   5432/tcp
-cricx-prometheus-1     prom/prometheus:v3.2.1      "/bin/prometheus --c…"   prometheus     15 hours ago    Up 4 hours                127.0.0.1:9090->9090/tcp
-cricx-simulator-1      cricx-simulator             "python -m producer.…"   simulator      6 minutes ago   Up 6 minutes              
-cricx-spark-1          cricx-spark                 "/opt/entrypoint.sh …"   spark          6 minutes ago   Up 6 minutes              
+NAME                   IMAGE                       COMMAND                  SERVICE        CREATED        STATUS                  PORTS
+cricx-alertmanager-1   prom/alertmanager:v0.28.1   "/bin/alertmanager -…"   alertmanager   10 hours ago   Up 10 hours             9093/tcp
+cricx-dashboard-1      cricx-dashboard             "streamlit run dashb…"   dashboard      6 hours ago    Up 6 hours              127.0.0.1:8501->8501/tcp
+cricx-grafana-1        grafana/grafana:11.6.0      "/run.sh"                grafana        22 hours ago   Up 10 hours             127.0.0.1:3000->3000/tcp
+cricx-kafka-1          apache/kafka:3.9.0          "/__cacert_entrypoin…"   kafka          22 hours ago   Up 11 hours (healthy)   127.0.0.1:9092->9092/tcp
+cricx-postgres-1       postgres:16.8               "docker-entrypoint.s…"   postgres       22 hours ago   Up 6 hours (healthy)    5432/tcp
+cricx-prometheus-1     prom/prometheus:v3.2.1      "/bin/prometheus --c…"   prometheus     22 hours ago   Up 10 hours             127.0.0.1:9090->9090/tcp
+cricx-simulator-1      cricx-simulator             "python -m producer.…"   simulator      6 hours ago    Up 6 hours              
+cricx-spark-1          cricx-spark                 "/opt/entrypoint.sh …"   spark          6 hours ago    Up 6 hours              
