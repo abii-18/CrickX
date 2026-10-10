@@ -1,6 +1,7 @@
 """Private Docker-network replay controls; acknowledged sends and durable cursor."""
 import json
 import os
+import re
 import threading
 import time
 import uuid
@@ -10,6 +11,7 @@ from pathlib import Path
 from kafka import KafkaProducer
 from prometheus_client import Counter, Gauge, start_http_server
 from cricx.simulator import generate_match
+from cricx.teams import PROFILE
 
 STATE = Path(os.environ.get("SIMULATOR_STATE", "/state/run.json"))
 LOCK = threading.RLock()
@@ -23,6 +25,16 @@ def save():
     temporary = STATE.with_suffix(".tmp")
     temporary.write_text(json.dumps(state))
     temporary.replace(STATE)
+
+
+def archive_current():
+    if state.get("match_id"):
+        directory = STATE.parent / "runs"
+        directory.mkdir(parents=True, exist_ok=True)
+        target = directory / (state["match_id"] + ".json")
+        temporary = target.with_suffix(".tmp")
+        temporary.write_text(json.dumps(state))
+        temporary.replace(target)
 
 
 state = json.loads(STATE.read_text()) if STATE.exists() else dict(running=False, cursor=0, events=[], rate=2, match_id=None, error=None)
@@ -66,8 +78,23 @@ class Handler(BaseHTTPRequestHandler):
                     match = "sim-" + uuid.uuid4().hex[:12]
                     start = datetime.now(timezone.utc).isoformat()
                     overs = int(data.get("overs", 50))
-                    events = generate_match(match, int(data.get("seed", 42)), start, overs)
-                    state.update(match_id=match, events=events, cursor=0, rate=rate, running=True, error=None, overs=overs)
+                    profile = data.get("profile", PROFILE)
+                    events = generate_match(match, int(data.get("seed", 42)), start, overs, profile)
+                    archive_current()
+                    state.update(match_id=match, events=events, cursor=0, rate=rate, running=True, error=None, overs=overs, profile=profile)
+                elif self.path == "/select":
+                    match = data.get("match_id", "")
+                    if not re.fullmatch(r"sim-[0-9a-f]{12}", match):
+                        raise ValueError("invalid match ID")
+                    if match != state.get("match_id"):
+                        target = STATE.parent / "runs" / (match + ".json")
+                        if not target.exists():
+                            raise ValueError("saved replay unavailable")
+                        restored = json.loads(target.read_text())
+                        archive_current()
+                        alerts = state.get("alerts", [])
+                        state.clear()
+                        state.update(restored, running=False, alerts=alerts)
                 elif self.path == "/speed":
                     rate = float(data["rate"])
                     if not 0.1 <= rate <= 100:

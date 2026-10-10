@@ -1,10 +1,13 @@
 """Seeded India/Australia deliveries with 2023 XIs; synthetic match outcomes."""
 import random
 from datetime import datetime, timedelta
-from cricx.teams import INDIA, AUSTRALIA, INDIA_BOWLERS, AUSTRALIA_BOWLERS, PROFILE
+from cricx.teams import TEAMS, MATCH_PROFILES, PROFILE
 
 
-def generate_match(match_id, seed, start_time, overs=50):
+def generate_match(match_id, seed, start_time, overs=50, profile=PROFILE):
+    if profile not in MATCH_PROFILES:
+        raise ValueError("unknown match profile")
+    teams = MATCH_PROFILES[profile]
     if not 1 <= overs <= 50:
         raise ValueError("overs must be between 1 and 50")
     start = datetime.fromisoformat(start_time)
@@ -15,10 +18,10 @@ def generate_match(match_id, seed, start_time, overs=50):
     target = None
     events = []
     for innings in (1, 2):
-        batters = INDIA if innings == 1 else AUSTRALIA
-        bowlers = AUSTRALIA_BOWLERS if innings == 1 else INDIA_BOWLERS
-        batting_team = "India" if innings == 1 else "Australia"
-        bowling_team = "Australia" if innings == 1 else "India"
+        batting_team = teams[innings - 1]
+        bowling_team = teams[2 - innings]
+        batters = TEAMS[batting_team][1]
+        bowlers = TEAMS[bowling_team][2]
         striker, non_striker, next_batter = 1, 2, 3
         balls = runs = wickets = sequence = 0
         free_hit = False
@@ -44,7 +47,7 @@ def generate_match(match_id, seed, start_time, overs=50):
                          striker=batters[striker - 1], non_striker=batters[non_striker - 1],
                          bowler=bowlers[(balls // 6) % 5], batter_runs=batter_runs,
                          extras=extras, wicket_type=wicket, player_out=batters[striker - 1] if wicket else None,
-                         match_profile=PROFILE, batting_team=batting_team, bowling_team=bowling_team,
+                         match_profile=profile, batting_team=batting_team, bowling_team=bowling_team,
                          innings_overs=overs, match_format="ODI" if overs == 50 else "Short simulation")
             events.append(event)
             elapsed += 1

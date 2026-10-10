@@ -5,6 +5,22 @@ from cricx.scoring import score
 
 
 class SimulatorTests(unittest.TestCase):
+    def test_all_fixture_rosters_and_independent_ids(self):
+        from cricx.teams import MATCH_PROFILES, TEAMS
+        for profile, teams in MATCH_PROFILES.items():
+            events = generate_match(profile, 7, "2026-10-10T00:00:00+00:00", 50, profile)
+            for event in events:
+                validate(event)
+                team = teams[event["innings_number"]-1]
+                opposition = teams[2-event["innings_number"]]
+                self.assertEqual(event["batting_team"], team)
+                self.assertEqual(event["bowling_team"], opposition)
+                self.assertIn(event["striker"], TEAMS[team][1])
+                self.assertIn(event["bowler"], TEAMS[opposition][2])
+            self.assertEqual(len(score(events)), 2)
+        with self.assertRaises(ValueError):
+            generate_match("bad", 7, "2026-10-10T00:00:00+00:00", profile="unknown")
+
     def test_seeded_replay_and_legal_innings(self):
         for seed in range(20):
             events = generate_match("test", seed, "2026-10-10T00:00:00+00:00", 20)

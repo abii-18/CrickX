@@ -8,10 +8,10 @@ Prometheus and Grafana expose processing outcomes, backlog and failures.
 ## Status
 
 Working local pipeline with seeded simulator and dashboard start/pause/resume controls.
-All 14 tests passed, alongside end-to-end simulation, database outage recovery,
+All 17 tests passed, alongside end-to-end simulation, database outage recovery,
 consumer-group/order, watermark handling and finite duplicate burst experiments.
 See `experiments/initial_validation.md` and `experiments/simulator_validation.md`.
-Cloud deployment and visual polish are pending.
+The stadium dashboard includes a selectable six-fixture match gallery. Cloud deployment is pending.
 No paid services or cloud resources have been provisioned.
 
 ## Run locally
@@ -37,6 +37,21 @@ also offer 2, 5 or 20-over demos. All outcomes are synthetic, not historical res
 Playing XI names are sourced from the
 [ICC final report](https://www.icc-cricket.com/news/awesome-australia-beat-india-to-win-the-icc-mens-cricket-world-cup).
 New runs get new match IDs; existing scorecards remain.
+The match cards also support India/New Zealand, Australia/South Africa,
+England/Pakistan, New Zealand/Australia and India/South Africa. Their selected XIs
+use the [confirmed 2023 ICC squads](https://www.icc-cricket.com/media-releases/squads-confirmed-for-icc-mens-cricket-world-cup-2023).
+Click a card to view that match's banner, scorecards, players, team statistics and
+analytics. Arrow buttons show the next three fixtures; the replay archive retains
+older runs. Viewing a card does not switch or start the active producer. Start
+resumes an unfinished saved replay, or creates a new run for a finished fixture.
+Only one replay publishes at a time; other cards display stored accepted scores.
+To populate the five additional fixtures explicitly through Kafka and Spark:
+
+```powershell
+docker compose exec dashboard python -m experiments.seed_match_gallery
+```
+
+The script reconciles both innings and restores the previous replay paused.
 Pause/resume preserves the run. A simulator restart pauses automatically and
 retains acknowledged progress in its Docker volume. A crash between Kafka acknowledgement
 and cursor persistence can resend a delivery; the canonical ledger deduplicates it.
