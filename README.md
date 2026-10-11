@@ -1,8 +1,7 @@
 # CricX
 
 A ball-by-ball cricket simulator built with Kafka, PySpark Structured Streaming,
-PostgreSQL and Streamlit. Matches use selected 2023 World Cup XIs; all outcomes
-are simulated.
+PostgreSQL and Streamlit. Matches use selected 2023 World Cup XIs.
 
 ![Tests](https://github.com/abii-18/CrickX/actions/workflows/tests.yml/badge.svg)
 
