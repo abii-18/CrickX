@@ -85,4 +85,3 @@ docker compose down
 This preserves data and checkpoints. Use `docker compose down -v` only when you
 intend to **delete this project's data and checkpoints**.
 
-AI tools helped with the code, documentation and testing.
