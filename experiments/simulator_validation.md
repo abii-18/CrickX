@@ -1,6 +1,6 @@
 # Simulator and database recovery — October 10, 2026
 
-Actual observations from the local Docker deployment; no cloud deployment yet.
+Actual observations from the local Docker deployment.
 
 - All 14 scoring, simulator and PostgreSQL tests passed. Simulator tests cover
   20 seeds, stable identities, no dismissed batter returning, legal-ball limits,

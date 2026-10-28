@@ -28,4 +28,4 @@ Observed checks:
   or exceptions. An in-progress preview was paused at 105/5 after 17 overs before
   the browser control test resumed and paused it again.
 
-No Oracle account or cloud resources were created. Cloud deployment remains pending.
+Validation was performed on the local Docker Compose deployment.

@@ -12,7 +12,7 @@
 - Resolved schema loading relative to the source file. Rejection metrics distinguish new audit rows from retries of previously audited Kafka offsets.
 - The initial demo run passed 18 scoring, simulator, read-model and PostgreSQL tests. Later runs are recorded in the README and experiment reports.
 
-Cloud deployment is deferred. No cloud resources or paid services have been created.
+The verified deployment uses local Docker. No hosted deployment has been tested.
 The current architecture is frozen for learning and interview preparation.
 
 AI tools helped with implementation, documentation and testing. The design documents and experiment reports describe the tradeoffs, results and limitations.

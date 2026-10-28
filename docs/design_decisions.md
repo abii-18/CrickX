@@ -58,6 +58,6 @@ again and a process restart resets it. Sink errors still use the existing alert.
 
 See [executed checks and limits](../experiments/spark_over_aggregation.md).
 
-Larger datasets, additional analytics and cloud deployment are deferred. ARM64
+Larger datasets, additional analytics and non-local hosting have not been validated. ARM64
 image manifests have been checked, but ARM64 execution has not been tested.
 The changelog and experiment reports record the checks performed.
