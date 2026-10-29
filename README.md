@@ -8,14 +8,9 @@ The stack is deliberately small: Python produces delivery events, Kafka carries 
 
 ## Pipeline
 
-```mermaid
-flowchart LR
-    P[Python match simulator] --> K[Kafka]
-    K --> S[PySpark Structured Streaming]
-    S --> D[(PostgreSQL)]
-    D --> U[Streamlit dashboard]
-    S --> M[Prometheus / Grafana]
-```
+![CrickX animated architecture](docs/images/crickx-architecture-animated.gif)
+
+[Detailed architecture](docs/architecture.md)
 
 ![CrickX dashboard](docs/images/dashboard.png)
 
